@@ -8,12 +8,8 @@ header <- dashboardHeader(title = "WonderData")
 sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Home", tabName = "home", icon = icon("home")),
-    menuItem("WORLD", icon = icon("bar-chart-o"), tabName = "overview", startExpanded = TRUE,
-             menuSubItem("Profile", icon = icon("check-circle"),tabName = "profileWorld"),
-             menuSubItem("Data", icon = icon("check-circle"),tabName = "dataWorld")),
-    menuItem("ASIA", icon = icon("bar-chart-o"), tabName = "overview", startExpanded = TRUE,
-             menuSubItem("Profile", icon = icon("check-circle"), tabName = "profileAsia"),
-             menuSubItem("Data", icon = icon("check-circle"),tabName = "dataAsia"))
+    menuItem("WORLD", icon = icon("bar-chart-o"), tabName = "profileWorld"),
+    menuItem("ASEAN", icon = icon("bar-chart-o"), tabName = "profileAsean")
   )
 )
 
@@ -22,7 +18,7 @@ body <- dashboardBody(
   
 
   tabItems(
-    # ========== body code for menu::Home ===============
+    # ========== body code for menu::HOME ===============
     tabItem(tabName = "home",
             fluidRow(
               box(width = 12,
@@ -34,15 +30,15 @@ body <- dashboardBody(
                        br(),
                        
                 navbarPage(title = "",
-                           tabPanel(strong("ABOUT"), 
-                                    h4("Today globalization and trend in trevelling have been dramatically increased over the last twenty years. 
-                   The number of people who visiting foreign country rise each and every year to the other part around the world. 
-                   This phenomenon has brought impact to GDP (Gross Domestic Product) growth due to tourism spending."),
-                                    h4("In fact, tourism has implications on the economy, on the natural and built evironment, on the local desination, 
+                           tabPanel(strong("About"), 
+                                    h4("Today globalization and trend in travelling have been dramatically increased over the last twenty years. 
+                   The number of people visiting foreign country rise each and every year to the other part around the world. 
+                   This phenomenon has brought impact to GDP (Gross Domestic Product) growth due to tourism expenditure."),
+                                    h4("In fact, tourism has implications on the economy, on the natural and built evironment, on the local destination, 
                    and on the tourist themselves. Tourist also called visitors, which may be either resident or non-resident who 
-                   are doing activities which imply tourism expenditure. Additionally, in world tourism organization data says money 
-                   spent by foreign visitors accounted for almost  30 % of total world services exports."),
-                                    h4("Using 10 years data, we can anlyse the revenues generated from inbound and outbound tourism."),
+                   are doing activities which imply tourism expenditure. World Tourism Organization mentions that money 
+                   spent by foreign visitors accounted for almost 30 % of total world services exports."),
+                                    h4("Using 10 years data, we can analyse the revenues generated from inbound and outbound tourism."),
                                     br(), br()
                                     ),
                            
@@ -54,6 +50,10 @@ body <- dashboardBody(
                                     h5("The activities of a non-resident who visit a country for the purpose of tourism."),
                                     h4(strong("Outbound Tourist")),
                                     h5("The activities of a resident who leave their own country to visit another country for the purpose of tourism."),
+                                    h4(strong("Passenger Transport Expenditure")),
+                                    h5("Expenditures of international outbound visitors in other countries for all services provided during international transportation 
+                                       by nonresident carriers which including fares that are a part of package tours and  charges for food, drink, or other items for which 
+                                       passengers make expenditures while on board carriers."),
                                     h4(strong("Tourism Revenue")),
                                     h5("Income from visitors (inbound, outbound) covers the estimated daily spending."),
                                     h4(strong("Tourist")),
@@ -74,23 +74,21 @@ body <- dashboardBody(
                                     br(), br()
                                     ),
                            
-                           tabPanel(strong("Dataset"), 
-                                    h4(strong("Source 1")), 
-                                    h5("World Bank Data"), 
-                                    h4(strong("Source 2")), 
-                                    h5("Facebook"),
+                           tabPanel(strong("Data Links"), 
+                                    h4(strong("1. Github")), 
+                                    h5(uiOutput("link1")), br(),
+                                    h4(strong("2. RPubs")), 
+                                    h5(uiOutput("link2")),
+                                    h4(strong("3. Dataset for the World (from WDI)")), 
+                                    h5(uiOutput("link3")), br(),
+                                    downloadButton("downloadBtnW", "Download data"), br(), br(),
+                                    #h4(strong("4. Dataset for ASEAN country")), 
+                                    downloadButton("downloadBtnA", "Download data"), br(), br(),
+                                    #h5(uiOutput("link4")),
                                     br(), br()
-                                    ),
-                           
-                           tabPanel(strong("Info"), 
-                                    "What we have and how user can interact with this shiny app"
-                                    ),
-                           
-                           tabPanel(strong("Links"), 
-                                    "1. Github Links here", br(),
-                                    "What we have and how user can interact with this shiny app")
+                                    )
                            ) # end of navbar page
-
+                
               ) #end of box
             ) #end of fluidRow
     ), #end of tabitem
@@ -99,15 +97,18 @@ body <- dashboardBody(
 
     tabItem(tabName = "profileWorld",
             fluidRow(
-              box(width = 12,
+              box(width = 12, 
                   tabsetPanel(
                     tabPanel("Analysis 1", 
-                             h2("Revenues Generated from Tourism Expenditure:", br(),"Top and Bottom Countries (WDI data)", align="center"),
+                             h2("Revenues Generated from Tourism (USD Billion):", br(),"Top and Bottom Countries (WDI data)", align="center"),
                              box(title = "Top revenue", status = "primary", solidHeader = TRUE, 
                                  busyIndicator(text = "Rendering in progress ... ",wait = 500),
+                                 checkboxInput("checkW1", "Add Outbound Revenue trend",
+                                               value=TRUE),
+                                 hr(),
                                  plotOutput("worldtopPlot"),
-                                 br(),br(),
-                                 sliderInput("sYearW1", "1. Select year:", min=2005, max=2015, value = 2016, step = 1),
+                                 hr(),
+                                 sliderInput("sYearW1", "1. Select year:", min=2005, max=2015, value = 2016, step = 1, animate = TRUE),
                                  br(),
                                  radioButtons("w1", "2. Select number of country to view:",
                                               list("Top 5"='a', "Top 10"='b', "Top 20"='c', "Top 30"='d', "Show all"='e'),
@@ -115,69 +116,101 @@ body <- dashboardBody(
                              ),
                              box(title = "Bottom revenue", status = "primary", solidHeader = TRUE, 
                                  busyIndicator(text = "Rendering in progress ... ",wait = 500),
+                                 checkboxInput("checkW2", "Add Outbound Revenue trend line",
+                                               value=FALSE),
+                                 hr(),
                                  plotOutput("worldbotPlot"),
-                                 br(),br(),
-                                 sliderInput("sYearW2", "1. Select year:", min=2005, max=2015, value = 2016, step = 1),
+                                 hr(),
+                                 sliderInput("sYearW2", "1. Select year:", min=2005, max=2015, value = 2016, step = 1, animate = TRUE),
                                  br(),
                                  radioButtons("w2", "2. Select number of country to view:",
                                               list("Bottom 10"='f', "Bottom 20"='g', "Bottom 30"='h'),
                                              selected='f')
                              )
                     ),
+                    
                     tabPanel("Analysis 2", 
-                             h2("Revenues generated from countries in the world"),
-                             "Tab content here")
+                             h2("Transportation Revenues vs Inbound Revenues (USD Billion)", align="center"),
+                            status = "primary", solidHeader = TRUE, 
+                                 busyIndicator(text = "Rendering in progress ... ",wait = 500),
+                                 checkboxInput("checkW3", "Add Inbound Revenue trend line",
+                                               value=TRUE),
+                                 hr(),
+                                 plotOutput("worldRvTPlot"),
+                                 hr(),
+                                 sliderInput("sYearW3", "Select year:", min=2005, max=2015, value = 2010, step = 1, animate = TRUE),
+                                 br()
+                             ),
+                    
+                    tabPanel("Analysis 3", 
+                             h2("Inbound Revenues (USD Billion) vs", br(),"GDP", align="center"),
+                              status = "primary", solidHeader = TRUE, 
+                                 busyIndicator(text = "Rendering in progress ... ",wait = 500),
+                                 checkboxInput("checkW4", "View Inbound Revenue trend (USD Billion)",
+                                               value=FALSE),
+                                 checkboxInput("checkW5", "View Total Population (Million)",
+                                               value=FALSE),
+                                 hr(),
+                                 plotOutput("worldRvGdpPlot"),
+                                 hr(),
+                                 sliderInput("sYearW4", "1. Select year:", min=2005, max=2015, value = 2016, step = 1, animate = TRUE),
+                                 br(),
+                                 radioButtons("w4", "2. Select number of country to view:",
+                                              list("Top 10"='l', "Top 20"='m', "Top 30"='n'),
+                                              selected='l'),
+                                 br()
+                             ),
+                    
+                    tabPanel("Data", 
+                             br(),
+                             box(width = 12, status = "primary", solidHeader = TRUE,
+                                 h2("Download datasets"),
+                                 br(),
+                                 downloadButton("downloadBtnW", "Download data"), br(), br(),
+                                 DT::dataTableOutput("dataWorldTable")
+                             ))
                   )
               ) #end of box
             ) #end of fluidRow
     ), #end of tabitem
     
-    tabItem(tabName = "dataWorld",
-            fluidRow(
-              box(width = 12, solidHeader = FALSE,
-                  h2("Download datasets"),
-                  br(),
-                  downloadButton("downloadBtnW", "Download data"), br(), br(),
-                  DT::dataTableOutput("dataWorldTable")
-              )
-            )
-            
-    ), #end of tabitem
 
-    # ========== body code for menu::ASIA ===============
-    tabItem(tabName = "profileAsia",
+
+    # ========== body code for menu::ASEAN ===============
+    tabItem(tabName = "profileAsean",
             fluidRow(
               box(width = 12,
                   tabsetPanel(
                     tabPanel("Analysis 1", 
-                             h2("Revenues Generated from Tourism Expenditure:", br(),"ASEAN Countries (csv data)", align="center"),
-                             box(width = 12,
-                                 title = "Top revenue", status = "primary", solidHeader = TRUE, 
+                             h2("Revenues Generated from Tourism Expenditure (USD Billion):", br(),"ASEAN Countries", align="center"),
+                             box(width = 12, status = "primary", solidHeader = TRUE, 
+                                 #title = "Top revenue", 
                                  busyIndicator(text = "Rendering in progress ... ",wait = 500),
-                                 plotOutput("asiaPlot"),
+                                 plotOutput("aseanPlot"),
                                  br(),
-                                 sliderInput("sYearA1", "1. Select year:", min=2006, max=2016, value = 2016, step = 1),
+                                 sliderInput("sYearA1", "Select year:", min=2005, max=2016, value = 2016, step = 1, animate = TRUE),
                                  br()
-                             )
-                    ),
+                             )),
                     tabPanel("Analysis 2", 
-                             h2("Revenues generated from countries in the world"),
-                             "Tab content here")
+                             h2("Revenues Generated from Tourism Expenditure:", br(),  "Malaysia, 2005-2016", align="center"),
+                             box(width = 12, status = "primary", solidHeader = TRUE,
+                                 #title = "Revenue vs Year",  
+                                 busyIndicator(text = "Rendering in progress ... ",wait = 500),
+                                 plotOutput("MsiaPlot"),
+                                 br()
+                             )),
+                    tabPanel("Data", 
+                             br(),
+                             box(width = 12, status = "primary", solidHeader = TRUE,
+                                 h2("Download datasets"),
+                                 br(),
+                                 downloadButton("downloadBtnA", "Download data"), br(), br(),
+                                 DT::dataTableOutput("dataAseanTable")
+                             ))
                   )
               ) #end of box
             ) #end of fluidRow
-    ), #end of tabitem
-    tabItem(tabName = "dataAsia",
-            fluidRow(
-              box(width = 12, solidHeader = FALSE,
-                  h2("Download datasets"),
-                  br(),
-                  downloadButton("downloadBtnA", "Download data"), br(), br(),
-                  DT::dataTableOutput("dataAsiaTable")
-              )
-            )
     ) #end of tabitem
-           
     
     )
 #end of dashboardBody
@@ -185,7 +218,7 @@ body <- dashboardBody(
 
 dashboardPage(
   header, 
-  title ="WQD7001 - Group 11", 
+  title ="WonderData", 
   sidebar, 
   body
 )
