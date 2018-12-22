@@ -1,5 +1,5 @@
 # WonderData
-## Analysis of Revenues Generated From Tourism Industriesshinyapp for WQD7001 project
+## Analysis of Revenues Generated From Tourism Industries
 
 Mohd Firdaus Bin Shahrin
 Parvitra Somahsundram
