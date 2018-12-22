@@ -12,21 +12,14 @@ shinyServer(
     output$link2 <- renderUI({
       tagList(url2)
     })
-    url2 <- a("https://rpubs.com/nadiabella/wonderdata", href="https://rpubs.com/nadiabella/wonderdata")
-    output$link3 <- renderUI({
-      tagList(url3)
-    })
-    url2 <- a("https://rpubs.com/nadiabella/wonderdata", href="https://rpubs.com/nadiabella/wonderdata")
-    output$link4 <- renderUI({
-      tagList(url4)
-    })
-    observeEvent(input$downloadBtnW, {
-      WDIworldData.csv <- df
-    })
-    observeEvent(input$downloadBtnA, {
-      WDIAseanData.csv <- df.Asean
-    })
-    
+    output$downloadBtnA <- downloadHandler(
+      filename = function() {
+        paste("aseanData.csv", ".csv", sep = "")
+      },
+      content = function(file) {
+        write.csv(output$dataAseanTable, file, row.names = FALSE)
+      }
+    )
     # ============= code for reactive ===============
     re_yearW1 = reactive({
       yearW1 = as.numeric(input$sYearW1)
@@ -110,9 +103,6 @@ shinyServer(
     output$worldRvTPlot <- renderPlot({
       
       dfW3 <- re_yearW3()
-      #dfW31 <- dfW3[dfW3$passengers_transports!=0, ]
-      #dfW32 <- dfW31[dfW31$inbound_revenue!=0, ]
-      #dfW32[,"Transport_Ratio"] <- dfW32$passengers_transports/dfW32$inbound_revenue
       dataList3 <- dfW3 %>% arrange(desc(dfW3$passengers_transports))
       dataWorld3 <- head(dataList3, n=20)
       op <- par(mar=c(9,5,2,5)) 

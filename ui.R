@@ -76,15 +76,14 @@ body <- dashboardBody(
                            
                            tabPanel(strong("Data Links"), 
                                     h4(strong("1. Github")), 
-                                    h5(uiOutput("link1")), br(),
+                                    h5(uiOutput("link1")),
                                     h4(strong("2. RPubs")), 
                                     h5(uiOutput("link2")),
-                                    h4(strong("3. Dataset for the World (from WDI)")), 
-                                    h5(uiOutput("link3")), br(),
-                                    downloadButton("downloadBtnW", "Download data"), br(), br(),
-                                    #h4(strong("4. Dataset for ASEAN country")), 
-                                    downloadButton("downloadBtnA", "Download data"), br(), br(),
-                                    #h5(uiOutput("link4")),
+                                    
+                                    h4(strong("3. Dataset for the World (from WDI)")),
+                                   # downloadButton("downloadBtnW", "Download data"), br(),
+                                    h4(strong("4. Dataset for ASEAN country")), 
+                                    #downloadButton("downloadBtnA", "Download data", class = NULL),
                                     br(), br()
                                     )
                            ) # end of navbar page
